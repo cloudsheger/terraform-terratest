@@ -17,9 +17,10 @@ func TestTerraformAwsExample(t *testing.T) {
 	// Give this EC2 Instance a unique ID for a name tag so we can distinguish it from any other EC2 Instance running
 	// in your AWS account
 	expectedName := fmt.Sprintf("terratest-aws-example-%s", random.UniqueId())
+	expectedProject := fmt.Sprintf("cloudsheger")
 
 	// Pick a random AWS region to test in. This helps ensure your code works in all regions.
-	awsRegion := aws.GetRandomRegion(t, nil, nil)
+	awsRegion := fmt.Sprintf("us-east-1")
 
 	terraformOptions := &terraform.Options{
 		// The path to where our Terraform code is located
@@ -28,6 +29,7 @@ func TestTerraformAwsExample(t *testing.T) {
 		// Variables to pass to our Terraform code using -var options
 		Vars: map[string]interface{}{
 			"instance_name": expectedName,
+			"project_name":  "jimi",
 		},
 
 		// Environment variables to set when running Terraform
@@ -52,4 +54,9 @@ func TestTerraformAwsExample(t *testing.T) {
 	nameTag, containsNameTag := instanceTags["Name"]
 	assert.True(t, containsNameTag)
 	assert.Equal(t, expectedName, nameTag)
+
+	// Verify that our expected project tag is one of the tags
+	projectTag, containsProjectTag := instanceTags["Project"]
+	assert.True(t, containsProjectTag)
+	assert.Equal(t, expectedProject, projectTag)
 }

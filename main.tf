@@ -1,14 +1,27 @@
 # ---------------------------------------------------------------------------------------------------------------------
+# PIN TERRAFORM VERSION TO >= 0.12
+# The examples have been upgraded to 0.12 syntax
+# ---------------------------------------------------------------------------------------------------------------------
+
+terraform {
+  # This module is now only being tested with Terraform 0.13.x. However, to make upgrading easier, we are setting
+  # 0.12.26 as the minimum version, as that version added support for required_providers with source URLs, making it
+  # forwards compatible with 0.13.x code.
+  required_version = ">= 0.12.26"
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
 # DEPLOY AN EC2 INSTANCE RUNNING UBUNTU
-# See test/terraform_aws_example.go for how to write automated tests for this code.
+# See test/terraform_aws_example_test.go for how to write automated tests for this code.
 # ---------------------------------------------------------------------------------------------------------------------
 
 resource "aws_instance" "example" {
-  ami           = "${data.aws_ami.centos-stream8.id}"
-  instance_type = "t2.micro"
+  ami           = data.aws_ami.ubuntu.id
+  instance_type = var.instance_type
 
   tags = {
-    Name = "${var.instance_name}"
+    Name = var.instance_name
+    Project = var.project_name
   }
 }
 
@@ -16,9 +29,9 @@ resource "aws_instance" "example" {
 # LOOK UP THE LATEST UBUNTU AMI
 # ---------------------------------------------------------------------------------------------------------------------
 
-data "aws_ami" "centos-stream8" {
+data "aws_ami" "ubuntu" {
   most_recent = true
-  owners      = ["701759196663"] # Canonical
+  owners      = ["099720109477"] # Canonical
 
   filter {
     name   = "virtualization-type"
@@ -37,6 +50,6 @@ data "aws_ami" "centos-stream8" {
 
   filter {
     name   = "name"
-    values = ["spel-minimal-centos-8stream-hvm-*"]
+    values = ["ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-*"]
   }
 }

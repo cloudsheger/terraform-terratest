@@ -23,3 +23,14 @@ variable "instance_name" {
   description = "The Name tag to set for the EC2 Instance."
   default     = "terratest-example"
 }
+
+variable "project_name" {
+  description = "The Name tag to set for the EC2 Instance."
+  default     = "cloudsheger"
+}
+
+variable "instance_type" {
+  description = "The EC2 instance type to run."
+  type        = string
+  default     = "t2.micro"
+}
